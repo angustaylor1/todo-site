@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, request
 import sqlalchemy as db
+from sqlalchemy import select
 
 
 app = Flask(__name__)
@@ -17,7 +18,13 @@ user_table = db.Table(
     db.Column('password', db.String)
 )
 
+def select_all_data(table_name):
+    query = table_name.select()
+    result = connection.execute(query)
+    return result.all()
 
+def apology(message):
+    return render_template('apology.html', message=message)
 
 
 
@@ -46,15 +53,17 @@ def register():
     if request.method == 'GET':
         return render_template('register.html')
     else:
-        email = request.form['registerEmail']
+        username = request.form['registerUsername']
         password1 = request.form['registerPassword1']
         password2 = request.form['registerPassword2']
 
-        # check if the email is already in use
-        # if it is we fail and say email already exists
-        # if not check the passwords are the same
-        # if not we say the passwords have to be the same
-        # if it is then we update the database, tell them that its succesful and say log in.
+        info = select_all_data(user_table)
+        for row in info:
+            if username == row['username']:
+                return apology("Username is taken")
+
+
+        # we need to get a list of the usernames and passwords.
 
 
         return render_template('register.html')
