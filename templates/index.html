@@ -4,7 +4,11 @@
 
 <title>Todo Site</title>
 <style>
-
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
     .top-header {
         text-align: center;
     }
@@ -19,15 +23,21 @@
         margin-right: auto;
         flex-wrap: wrap;
         width: 200px;
+        border: 2px black solid;
+        padding: 5px;
     }
 
-    label, input {
+    label, input, select {
         margin-top: 10px;
     }
     .select-container {
         display: flex;
         justify-content: space-around;
     }
+    .table-container {
+        margin-top: 40px;
+    }
+    
 </style>
 
 {% endblock%}
@@ -48,33 +58,38 @@
 <div class="form-container">
     <form>
         <label for="description">Describe your task:</label>
-        <input type="text" id="description">
+        <input type="text" id="description" placeholder="Description">
         <label for="deadline">Deadline for task:</label>
         <input type="date" id="deadline">
-        <select>
-            <option selected disabled>We'll load created subjects. </option>
+        <select id="subject">
+            <option selected disabled>Miscellaneous</option>
         </select>
         <input type="submit" value="Add Task">
     </form>
 </div>
 <div class="table-container">
-<table class="table table-dark">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
+    <table class="table table-dark">
+    <thead>
+        <tr>
+        <th scope="col">Description</th>
+        <th scope="col">Deadline</th>
+        <th scope="col">Subject</th>
+        <th scope="col">Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in tasks %}
+        <tr>
+        <th scope="row">{{ row.description }}</th>
+        <td>{{ row.deadline }}</td>
+        <td>{{ row.subject }}</td>
+        <td>
+            <a>Update</a>
+            <a>Delete</a>
+        </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
 </div>
 {% endblock %}
