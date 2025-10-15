@@ -1,10 +1,28 @@
 from flask import Flask, render_template, session, request
+# import sqlalchemy as db
+
+
+
+# metdata_obj = db.MetaData()
+
 
 
 app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///test.db'
+# db = SQLAlchemy(app)
+# connection = engine.connect()
+
+# users = db.Table(
+#     'user',
+#     metadata_obj,
+#     db.Column(db.Integer, primary_key=True),
+#     db.Column('email', db.String),
+#     db.Column('password', db.String)
+# )
+
 
 @app.route('/')
-def index():
+def idex():
     return render_template('index.html')
 
 
