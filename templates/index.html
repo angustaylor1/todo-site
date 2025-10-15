@@ -3,14 +3,78 @@
 {% block head %}
 
 <title>Todo Site</title>
+<style>
+
+    .top-header {
+        text-align: center;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 50px;
+        margin-left:auto;
+        margin-right: auto;
+        flex-wrap: wrap;
+        width: 200px;
+    }
+
+    label, input {
+        margin-top: 10px;
+    }
+    .select-container {
+        display: flex;
+        justify-content: space-around;
+    }
+</style>
 
 {% endblock%}
 
 
 {% block body %} 
-<h1>To Do</h1>
+<h1 class="top-header">To Do</h1>
 
-<select>
-    <option selected disabled>Select Subject of Tasks</option>
-</select>
+<div class="select-container">
+    <select>
+        <option selected disabled>Choose Subject</option>
+    </select>
+    <select>
+        <option></option>
+    </select>
+</div>
+
+<div class="form-container">
+    <form>
+        <label for="description">Describe your task:</label>
+        <input type="text" id="description">
+        <label for="deadline">Deadline for task:</label>
+        <input type="date" id="deadline">
+        <select>
+            <option selected disabled>We'll load created subjects. </option>
+        </select>
+        <input type="submit" value="Add Task">
+    </form>
+</div>
+<div class="table-container">
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
 {% endblock %}
