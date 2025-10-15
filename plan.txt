@@ -1,0 +1,24 @@
+TODO WEBSITE
+
+Key functionalities
+- Keep track of my homework that needs done. 
+- Be able to switch between college, life, and work tasks that need done. 
+- Find a way to send reminders to myself of what needs done that hasn't been done.
+- be able to tick off anything that I have entered into the thing.
+
+PLAN
+
+Log in - I want there to be multiple users that can use the site.
+Home page - Home page should basically just be basic info about the user, and the tasks that they have to do.
+
+
+Things we'll need:
+We'll need an app.py so we can deal with the log ins and verify the users and stuff.
+Need html templates for the log in page, and the main page
+
+the actual to do list:
+        So if I am a new user, and I am going to college, I'm working, and I'm keeping track of weekly personal tasks I need to do.
+        I want to be able to create to do lists for college, work, and personal.
+        Basically want to give each thing a tag.
+        And give the option to look at all tasks that you need, with dates and how many days left to complete.
+        if it a weekly thing have it repeat, but have the most current one come up, not have an endless list of them
