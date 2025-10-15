@@ -1,27 +1,37 @@
 from flask import Flask, render_template, session, request
 import sqlalchemy as db
-from sqlalchemy import select
 
+# This creates the engine object that acts as a central source
+# of connections for the database
+engine = db.create_engine('sqlite+pysqlite:///:memory:')
+
+#  This creates the metadata object that contains
+#  the information about the tables and columns
+# that are contained in the database
+metadata = db.MetaData()
+
+
+# create the two tables with their columns
+tasks = db.Table(
+    'tasks',
+    metadata,
+    db.Column('id', db.Integer, primary_key=True, nullable=False, autoincrement=True),
+    db.Column('description', db.String(200)),
+    db.Column('subject', db.String(50)),
+    db.Column('subject_id', db.ForeignKey('subjects.id'), nullable=False)
+)
+subjects = db.Table(
+    'subjects',
+    metadata,
+    db.Column('id', db.Integer, primary_key=True, nullable=False, autoincrement=True),
+    db.Column('Subject Name', db.String)
+)
+
+# This initializes and creates the tables into existence
+metadata.create_all(engine)
 
 app = Flask(__name__)
 
-engine = db.create_engine('sqlite:///database.db')
-connection = engine.connect()
-
-metadata = db.MetaData()
-
-user_table = db.Table(
-    'users',
-    metadata,
-    db.Column('user_id', db.Integer, primary_key=True),
-    db.Column('username', db.String),
-    db.Column('password', db.String)
-)
-
-def select_all_data(table_name):
-    query = table_name.select()
-    result = connection.execute(query)
-    return result.all()
 
 def apology(message):
     return render_template('apology.html', message=message)
@@ -29,43 +39,13 @@ def apology(message):
 
 
 
-
-@app.route('/')
-def idex():
-    return render_template('index.html')
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-
+@app.route('/', methods =['GET', 'POST'])
+def index():
     if request.method == 'POST':
-        user = request.get('exampleEmailInput1')
-    else:
-        return render_template("login.html")
+        description = request.form.get('description')
+        deadline = request.form.get('deadline')
+        subject = request.form.get('subject')
 
-
-@app.route('/logout')
-def logout():
-    return
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'GET':
-        return render_template('register.html')
-    else:
-        username = request.form['registerUsername']
-        password1 = request.form['registerPassword1']
-        password2 = request.form['registerPassword2']
-
-        info = select_all_data(user_table)
-        for row in info:
-            if username == row['username']:
-                return apology("Username is taken")
-
-
-        # we need to get a list of the usernames and passwords.
-
-
-        return render_template('register.html')
+    return render_template('index.html')
 
 
