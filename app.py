@@ -63,11 +63,11 @@ def index():
         subject = request.form.get('subject')
 
         if not description:
-            return '<h1>Please enter a description<h1>'
+            return '<h1>Please enter a description</h1>'
         elif not deadline:
-            return'<h1>Please enter a deadline<h1>'
+            return'<h1>Please enter a deadline</h1>'
         elif not subject:
-            return'<h1>Please choose a subject<h1>'
+            return'<h1>Please choose a subject</h1>'
         
         
         cur.execute(
@@ -89,7 +89,7 @@ def addSubject():
         res = cur.execute(
             'SELECT subject_name FROM subjects;'
         ).fetchall()
-
+        con.close()
         subjects = []
 
         for row in res:
@@ -98,5 +98,54 @@ def addSubject():
             })
             
         return render_template('addSubject.html', subjects=subjects)
+    
+    if request.method == 'POST':
+
+        newSubjectName = request.form.get('subject_name')
+        subjectColor = request.form.get('color')
+
+        if not newSubjectName:
+            return '<h1>Make sure the subject has a name'
+        elif not subjectColor:
+            return '<h1>Make sure to select a color</h1?'
+        
+        con = sqlite3.connect('todosite.db')
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+
+        try:
+            res = cur.execute(
+                'INSERT INTO subjects (subject_name, subject_color) VALUES (?, ?);',
+                (newSubjectName, subjectColor)
+            )
+            con.commit()
+            con.close()
+            return render_template('addSubject.html', message='Succesfully created new Subject!')
+        except:
+            con.close()
+            return '<h1> We couldn\'t create that subject</h1>'
+
+
+@app.route('/deleteSubject', methods=['GET', 'POST'])
+def delete():
+        if request.method == "GET":
+            con = sqlite3.connect('todosite.db')
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+
+            res = cur.execute(
+                'SELECT subject_name FROM subjects;'
+            ).fetchall()
+            con.close()
+            subjects = []
+
+            for row in res:
+                subjects.append({
+                    'subject': row['subject_name']
+                })
+                
+            return render_template('deleteSubject.html', subjects=subjects)
+            
+
 
 

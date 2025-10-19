@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block head %}
-<title>Update your Subjects</title>
+<title>Delete</title>
 <style>
     h1 {
         text-align: center;
@@ -21,11 +21,6 @@
         justify-content: center;
         }
 
-    hr {
-        color: black;
-        border: 1px black solid;
-        margin: 0 10 0 10
-    }
     .form-item {
         margin: 15px 15px 15px 15px;
     }
@@ -38,20 +33,18 @@
 {% endblock %}
 
 {% block body %}
-<h1>Add a new Subject</h1>
+
+<h1>Delete a Subject</h1>
 <div class="form-container">
-    <form action="/addSubject" method="POST">
-        <input type="text" placeholder="Subject Name" name="subject_name" class="form-item" required>
-        <select class="form-item" name="color" required>
-            <option selected disabled>Choose a colour.</option>
-            <option name="white">White</option>
-            <option name="red">Red</option>
-            <option name="blue">Blue</option>
+    <form action="/addSubject" mathod="POST" name="delete">
+        <select class="form-item">
+            <option>Subjects</option>
+            {% for subject in subjects %}
+            <option name="{{ subject.subject }}">{{ subject.subject }}</option>
+            {% endfor %}
         </select>
-        <input type="submit" value="Create Subject" name="add">
+        <input type="submit", value="Delete Subject" class="form-item" name="delete">
     </form>
-    <div class="result">
-    <p>{{ message }}</p>
 </div>
-</div>
+
 {% endblock %}
