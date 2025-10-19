@@ -26,12 +26,13 @@ def index():
         cur = con.cursor()
 
         res = cur.execute(
-            'SELECT * FROM tasks;'
+            'SELECT * FROM tasks ORDER BY deadline;'
         ).fetchall()
 
         tasks = []
         for row in res:
             tasks.append({
+                'id': row['task_id'],
                 'description': row['description'],
                 'subject': row['subject'],
                 'deadline': row['deadline']
@@ -113,6 +114,14 @@ def addSubject():
         con.row_factory = sqlite3.Row
         cur = con.cursor()
 
+        subject_names = cur.execute(
+            'SELECT subject_name FROM subjects'
+        ).fetchall()
+
+        for row in subject_names:
+            if row['subject_name'] == newSubjectName:
+                return 'That subject name is already created. Try another one.'
+
         try:
             res = cur.execute(
                 'INSERT INTO subjects (subject_name, subject_color) VALUES (?, ?);',
@@ -127,7 +136,7 @@ def addSubject():
 
 
 @app.route('/deleteSubject', methods=['GET', 'POST'])
-def delete():
+def deleteSubject():
         if request.method == "GET":
             con = sqlite3.connect('todosite.db')
             con.row_factory = sqlite3.Row
@@ -136,15 +145,60 @@ def delete():
             res = cur.execute(
                 'SELECT subject_name FROM subjects;'
             ).fetchall()
-            con.close()
             subjects = []
 
             for row in res:
                 subjects.append({
                     'subject': row['subject_name']
                 })
-                
+
             return render_template('deleteSubject.html', subjects=subjects)
+        
+        if request.method == 'POST':
+            subject = request.form.get('subject')
+
+            con = sqlite3.connect('todosite.db')
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+
+            if  not subject:
+                con.close()
+                return render_template('apology.html', message='Please choose a subject to delete.')
+
+            try:
+                cur.execute(
+                    'DELETE FROM tasks WHERE subject_id = (SELECT subject_id FROM subjects WHERE subject_name = ?)', (subject,)
+                )
+                con.commit()
+                cur.execute(
+                    'DELETE FROM subjects WHERE subject_name = ?;',
+                    (subject,)
+                )
+                con.commit()
+                con.close()
+                return redirect('/deleteSubject')
+            except:
+                con.close()
+                return redirect('/deleteSubject')
+
+@app.route('/deleteTask/<int:id>')
+def deleteTask(id):
+        con = sqlite3.connect('todosite.db')
+        cur = con.cursor()
+
+        cur.execute(
+            'DELETE FROM tasks WHERE task_id = ?;', (id,)
+        )
+        con.commit()
+        con.close()
+
+        return redirect('/') 
+
+
+@app.route('/updateTask/<int:id>', methods =['GET', 'POST'])
+def updateTask(id):
+    return render_template('update.html')
+
             
 
 

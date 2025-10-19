@@ -65,7 +65,7 @@
         <label for="deadline">Deadline for task:</label>
         <input type="date" id="deadline" name="deadline" required>
         <select id="subject" name="subject" required>
-            <option selected>Choose Subject</option>
+            <option selected disabled>Choose Subject</option>
             {% for subject in subjects %}
             <option name="{{ subject.subject }}">{{ subject.subject }}</option>
             {% endfor %}
@@ -77,6 +77,7 @@
     <table class="table">
     <thead>
         <tr>
+        <th scope="col">Task_ID</th>
         <th scope="col">Description</th>
         <th scope="col">Deadline</th>
         <th scope="col">Subject</th>
@@ -86,12 +87,13 @@
     <tbody>
         {% for task in tasks %}
         <tr>
-        <th scope="row">{{ task.description }}</th>
+        <th scope="row">{{ task.id }}</th>
+        <td>{{ task.description }}</td>
         <td>{{ task.deadline }}</td>
         <td>{{ task.subject }}</td>
         <td>
-            <a>Update</a>
-            <a>Delete</a>
+            <a href="/updateTask/{{ task.id }}">Update</a>
+            <a href="/deleteTask/{{ task.id }}">Delete</a>
         </td>
         </tr>
         {% endfor %}

@@ -36,15 +36,17 @@
 
 <h1>Delete a Subject</h1>
 <div class="form-container">
-    <form action="/addSubject" mathod="POST" name="delete">
-        <select class="form-item">
-            <option>Subjects</option>
+    <form action="/deleteSubject" method="POST" name="delete">
+        <select class="form-item" name="subject">
+            <option selected disabled>Subjects</option>
             {% for subject in subjects %}
-            <option name="{{ subject.subject }}">{{ subject.subject }}</option>
+            <option value="{{ subject.subject }}">{{ subject.subject }}</option>
             {% endfor %}
         </select>
         <input type="submit", value="Delete Subject" class="form-item" name="delete">
     </form>
 </div>
+<script>
 
+</script>
 {% endblock %}
