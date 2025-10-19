@@ -50,7 +50,7 @@
     <select>
         <option selected>Choose Subject</option>
         {% for subject in subjects %}
-        <option selected name="{{ subject.subject }}">{{ subject.subject }}</option>
+        <option name="{{ subject.subject }}">{{ subject.subject }}</option>
         {% endfor %}
     </select>
     <select>
@@ -67,7 +67,7 @@
         <select id="subject" name="subject">
             <option selected>Choose Subject</option>
             {% for subject in subjects %}
-            <option selected name="{{ subject.subject }}">{{ subject.subject }}</option>
+            <option name="{{ subject.subject }}">{{ subject.subject }}</option>
             {% endfor %}
         </select>
         <input type="submit" value="Add Task">
