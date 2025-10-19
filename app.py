@@ -20,7 +20,7 @@ def index():
         
         # returns the data in the form of dicts so column names can be accessed
         # (otherwise it comes as a tuple that can't be accessed with column names)
-        con.row_factory =sqlite3.Row
+        con.row_factory = sqlite3.Row
         
         # Creates a cursor to manage the connections to the database
         cur = con.cursor()
@@ -29,25 +29,54 @@ def index():
             'SELECT * FROM tasks;'
         ).fetchall()
 
-        con.close()
-
         tasks = []
         for row in res:
             tasks.append({
-                'description': res[length]['description'],
-                'subject': res[length]['subject'],
-                'deadline': res[length]['deadline']
+                'description': row['description'],
+                'subject': row['subject'],
+                'deadline': row['deadline']
             })
-        return render_template('index.html', tasks=tasks)
+
+        result = cur.execute(
+            "SELECT subject_name FROM subjects;"
+        ).fetchall()
+        subjects = []
+        for row in result:
+            subjects.append({
+                'subject': row['subject_name']
+            })
+
+        return render_template('index.html', tasks=tasks, subjects=subjects)
     
     if request.method == 'POST':
+        # connect to database
+        con = sqlite3.connect('todosite.db')
 
-        return render_template('index.html', tasks=tasks)
+        # allow data to be dicts
+        con.row_factory = sqlite3.Row
 
+        # connect cursor
+        cur = con.cursor()
 
+        description = request.form.get('description')
+        deadline = request.form.get('deadline')
+        subject = request.form.get('subject')
 
-
-    return render_template('index.html')
+        if not description:
+            return '<h1>Please enter a description<h1>'
+        elif not deadline:
+            return'<h1>Please enter a deadline<h1>'
+        elif not subject:
+            return'<h1>Please choose a subject<h1>'
+        
+        
+        cur.execute(
+            'INSERT INTO tasks (description, subject, deadline) VALUES (?, ?, ?)',
+            (description, subject, deadline)
+            )
+        con.commit()
+        con.close()
+        return redirect('/')        
 
 @app.route('/addSubject', methods=['GET', 'POST'])
 def addSubject():

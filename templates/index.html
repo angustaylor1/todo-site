@@ -48,7 +48,10 @@
 
 <div class="select-container">
     <select>
-        <option selected disabled>Choose Subject</option>
+        <option selected>Choose Subject</option>
+        {% for subject in subjects %}
+        <option selected name="{{ subject.subject }}">{{ subject.subject }}</option>
+        {% endfor %}
     </select>
     <select>
         <option></option>
@@ -56,13 +59,16 @@
 </div>
 
 <div class="form-container">
-    <form action="index.html", meth="Post">
+    <form action="/", method="POST">
         <label for="description">Describe your task:</label>
         <input type="text" id="description" placeholder="Description" name="description">
         <label for="deadline">Deadline for task:</label>
         <input type="date" id="deadline" name="deadline">
         <select id="subject" name="subject">
-            <option selected disabled>Miscellaneous</option>
+            <option selected>Choose Subject</option>
+            {% for subject in subjects %}
+            <option selected name="{{ subject.subject }}">{{ subject.subject }}</option>
+            {% endfor %}
         </select>
         <input type="submit" value="Add Task">
     </form>
