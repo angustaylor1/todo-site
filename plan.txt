@@ -5,13 +5,16 @@ py -3 -m venv .venv
 
 .venv\Scripts\activate
 
+Stuff to do:
+Add a subject html.
+Add a subject route.
+Delete task functionality
+Update task functionality.
 
 
 
 
-
-
-
+Add a subject, we need to add a subject name and give it dropdown selector with colours preloaded.  color.
 
 Key functionalities
 - Keep track of my homework that needs done. 
@@ -35,3 +38,4 @@ the actual to do list:
         Basically want to give each thing a tag.
         And give the option to look at all tasks that you need, with dates and how many days left to complete.
         if it a weekly thing have it repeat, but have the most current one come up, not have an endless list of them
+

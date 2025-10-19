@@ -71,7 +71,7 @@ def index():
         
         
         cur.execute(
-            'INSERT INTO tasks (description, subject, deadline) VALUES (?, ?, ?)',
+            'INSERT INTO tasks (description, subject, deadline) VALUES (?, ?, ?);',
             (description, subject, deadline)
             )
         con.commit()
@@ -80,6 +80,23 @@ def index():
 
 @app.route('/addSubject', methods=['GET', 'POST'])
 def addSubject():
-    return render_template('addSubject.html')
+
+    if request.method == "GET":
+        con = sqlite3.connect('todosite.db')
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+
+        res = cur.execute(
+            'SELECT subject_name FROM subjects;'
+        ).fetchall()
+
+        subjects = []
+
+        for row in res:
+            subjects.append({
+                'subject': row['subject_name']
+            })
+            
+        return render_template('addSubject.html', subjects=subjects)
 
 

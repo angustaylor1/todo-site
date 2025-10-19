@@ -61,10 +61,10 @@
 <div class="form-container">
     <form action="/", method="POST">
         <label for="description">Describe your task:</label>
-        <input type="text" id="description" placeholder="Description" name="description">
+        <input type="text" id="description" placeholder="Description" name="description" required>
         <label for="deadline">Deadline for task:</label>
-        <input type="date" id="deadline" name="deadline">
-        <select id="subject" name="subject">
+        <input type="date" id="deadline" name="deadline" required>
+        <select id="subject" name="subject" required>
             <option selected>Choose Subject</option>
             {% for subject in subjects %}
             <option name="{{ subject.subject }}">{{ subject.subject }}</option>

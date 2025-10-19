@@ -1,5 +1,59 @@
 {% extends 'layout.html' %}
 
-{% block head %}{% endblock %}
+{% block head %}
+<title>Update your Subjects</title>
+<style>
+    h1 {
+        text-align: center;
+    }
+    .form-container {
+        display: flex;
+        justify-content: center;
 
-{% block body %}{% endblock %}
+    }
+    form {
+        border: 2px solid black;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        }
+
+    hr {
+        color: black;
+        border: 1px black solid;
+        margin: 0 10 0 10
+    }
+    .form-item {
+        margin: 15px 15px 15px 15px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<h1>Add a new Subject</h1>
+<div class="form-container">
+    <form>
+        <input type="text" placeholder="Subject Name" name="subject_name" class="form-item">
+        <select class="form-item">
+            <option name="white">White</option>
+            <option name="red">Red</option>
+            <option name="blue">Blue</option>
+        </select>
+    </form>
+</div>
+
+<hr>
+
+<h1>Delete a Subject</h1>
+<div class="form-container">
+    <form action="/addSubject" mathod="POST">
+        <select class="form-item">
+            <option>Subjects</option>
+        </select>
+        <input type="submit", value="Delete Subject" class="form-item">
+    </form>
+</div>
+
+
+{% endblock %}
