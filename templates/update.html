@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+<title>Todo Site</title>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .top-header {
+        text-align: center;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 50px;
+        margin-left:auto;
+        margin-right: auto;
+        flex-wrap: wrap;
+        width: 200px;
+        border: 2px black solid;
+        padding: 5px;
+    }
+
+    label, input, select {
+        margin-top: 10px;
+    }
+    .select-container {
+        display: flex;
+        justify-content: space-around;
+    }
+    .table-container {
+        margin-top: 40px;
+    }
+    
+</style>
+
+{% endblock%}
+
+
+{% block body %} 
+<h1 class="top-header">Update Task</h1>
+
+<div class="select-container">
+    <select>
+        <option selected>Choose Subject</option>
+        {% for subject in subjects %}
+        <option name="{{ subject.subject }}">{{ subject.subject }}</option>
+        {% endfor %}
+    </select>
+    <select>
+        <option></option>
+    </select>
+</div>
+{% endblock %}
