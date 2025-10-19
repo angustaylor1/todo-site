@@ -1,5 +1,18 @@
 TODO WEBSITE
 
+Setting up Virtual Environment:
+py -3 -m venv .venv
+
+.venv\Scripts\activate
+
+
+
+
+
+
+
+
+
 Key functionalities
 - Keep track of my homework that needs done. 
 - Be able to switch between college, life, and work tasks that need done. 

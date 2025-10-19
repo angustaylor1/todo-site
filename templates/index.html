@@ -56,7 +56,7 @@
 </div>
 
 <div class="form-container">
-    <form>
+    <form action="index.html", meth="Post">
         <label for="description">Describe your task:</label>
         <input type="text" id="description" placeholder="Description" name="description">
         <label for="deadline">Deadline for task:</label>
@@ -68,7 +68,7 @@
     </form>
 </div>
 <div class="table-container">
-    <table class="table table-dark">
+    <table class="table">
     <thead>
         <tr>
         <th scope="col">Description</th>
@@ -78,11 +78,11 @@
         </tr>
     </thead>
     <tbody>
-        {% for row in tasks %}
+        {% for task in tasks %}
         <tr>
-        <th scope="row">{{ row.description }}</th>
-        <td>{{ row.deadline }}</td>
-        <td>{{ row.subject }}</td>
+        <th scope="row">{{ task.description }}</th>
+        <td>{{ task.deadline }}</td>
+        <td>{{ task.subject }}</td>
         <td>
             <a>Update</a>
             <a>Delete</a>
