@@ -6,10 +6,9 @@ py -3 -m venv .venv
 .venv\Scripts\activate
 
 Stuff to do:
-Add a subject html.
-Add a subject route.
-Delete task functionality
-Update task functionality.
+add an edit subject function
+add the colors to the tasks
+add the functionality that allows you to see only the tasks from a specific subject.
 
 
 
