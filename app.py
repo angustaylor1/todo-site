@@ -2,49 +2,10 @@ from flask import Flask, render_template, session, request, redirect # type: ign
 import sqlite3
 from info import getAllTasks, getSubjectNames, apology
 
+
+
 app = Flask(__name__)
 
-
-def apology(message):
-    return render_template('apology.html', message=message)
-
-def getSubjectNames():
-    con = sqlite3.connect('todosite.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-
-    result = cur.execute(
-        "SELECT subject_name FROM subjects;"
-        ).fetchall()
-    subjects = []
-    for row in result:
-        subjects.append({
-        'subject': row['subject_name']
-        })
-
-
-    con.close()
-    return subjects
-
-def getAllTasks():
-    con = sqlite3.connect('todosite.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    res = cur.execute(
-        'SELECT * FROM tasks ORDER BY deadline;'
-    ).fetchall()
-
-    tasks = []
-    for row in res:
-        tasks.append({
-            'id': row['task_id'],
-            'description': row['description'],
-            'subject': row['subject'],
-            'deadline': row['deadline']
-        })
-
-    con.close()
-    return tasks
 
 
 @app.route('/', methods =['GET', 'POST'])
@@ -152,20 +113,7 @@ def addSubject():
 @app.route('/deleteSubject', methods=['GET', 'POST'])
 def deleteSubject():
         if request.method == "GET":
-            con = sqlite3.connect('todosite.db')
-            con.row_factory = sqlite3.Row
-            cur = con.cursor()
-
-            res = cur.execute(
-                'SELECT subject_name FROM subjects;'
-            ).fetchall()
-            subjects = []
-
-            for row in res:
-                subjects.append({
-                    'subject': row['subject_name']
-                })
-
+            subjects = getSubjectNames()
             return render_template('deleteSubject.html', subjects=subjects)
         
         if request.method == 'POST':
@@ -174,16 +122,33 @@ def deleteSubject():
             con = sqlite3.connect('todosite.db')
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-
+            
+            # check the user chose a subject
             if  not subject:
                 con.close()
                 return apology('Please choose a subject to delete.')
+            
+            # get the subject names to check the subject exists.
+            subjects = getSubjectNames()
 
+            # check if the chosen subject exists
+            # if it does we carry on, if it doesn't
+            # we send an error.
+            for elem in subjects:
+                if elem['subject'] == subject:
+                    break
+                else:
+                    return apology('That subject doesn\'t exist so can\'t be deleted')
+            
+            # we have confirmed the subject exists, so we can delete it and its tasks
             try:
+                # delete all of the tasks related to chosen subject
                 cur.execute(
                     'DELETE FROM tasks WHERE subject_id = (SELECT subject_id FROM subjects WHERE subject_name = ?)', (subject,)
                 )
                 con.commit()
+
+                # delete the subject from subject table.
                 cur.execute(
                     'DELETE FROM subjects WHERE subject_name = ?;',
                     (subject,)
@@ -193,7 +158,7 @@ def deleteSubject():
                 return redirect('/deleteSubject')
             except:
                 con.close()
-                return redirect('/deleteSubject')
+                return '<h1>Could not delete that subject</h1>'
 
 @app.route('/completeTask/<int:id>')
 def deleteTask(id):
@@ -229,17 +194,14 @@ def updateTask(id):
                 "SELECT subject_name FROM subjects;"
             ).fetchall()
             
-            subjects = []
-            
-            for row in result:
-             subjects.append({
-                'subject': row['subject_name']
-            })
+            subjects = getSubjectNames()
 
-            
             con.close()
             
             return render_template('update.html', task=task, subjects=subjects)
+    
+    if request.method == 'POST':
+        return redirect('/')
 
 
 

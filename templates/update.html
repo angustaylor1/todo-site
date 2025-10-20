@@ -64,7 +64,7 @@
         <select id="subject" name="subject" required value="{{ task.subject }}">
             <option selected disabled>Choose Subject</option>
             {% for subject in subjects %}
-            <option name="{{ subject.subject }}">{{ subject.subject }}</option>
+            <option {% if subject.subject == task.subject %}selected{% endif %} name="{{ subject.subject }}">{{ subject.subject }}</option>
             {% endfor %}
         </select>
         <br>
