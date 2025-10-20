@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect # type: ignore
+from flask import render_template
 import sqlite3
 
 # function that creates a page for any errors encouuntered
@@ -8,6 +8,7 @@ def apology(message):
 # function retrieves all of the existing
 # subject names and returns them in a list of dicts.
 def getSubjectNames():
+   
     # connects to database and creates a cursor
     con = sqlite3.connect('todosite.db')
     con.row_factory = sqlite3.Row
@@ -17,8 +18,9 @@ def getSubjectNames():
     result = cur.execute(
         "SELECT subject_name FROM subjects;"
         ).fetchall()
-    subjects = []
+    
     # populates subjects with a list of dicts of all the subject names
+    subjects = []
     for row in result:
         subjects.append({
         'subject': row['subject_name']
