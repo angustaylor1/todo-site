@@ -1,6 +1,6 @@
 from flask import Flask, render_template, session, request, redirect # type: ignore
 import sqlite3
-
+from info import getAllTasks, getSubjectNames, apology
 
 app = Flask(__name__)
 
@@ -8,44 +8,51 @@ app = Flask(__name__)
 def apology(message):
     return render_template('apology.html', message=message)
 
+def getSubjectNames():
+    con = sqlite3.connect('todosite.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
 
+    result = cur.execute(
+        "SELECT subject_name FROM subjects;"
+        ).fetchall()
+    subjects = []
+    for row in result:
+        subjects.append({
+        'subject': row['subject_name']
+        })
+
+
+    con.close()
+    return subjects
+
+def getAllTasks():
+    con = sqlite3.connect('todosite.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    res = cur.execute(
+        'SELECT * FROM tasks ORDER BY deadline;'
+    ).fetchall()
+
+    tasks = []
+    for row in res:
+        tasks.append({
+            'id': row['task_id'],
+            'description': row['description'],
+            'subject': row['subject'],
+            'deadline': row['deadline']
+        })
+
+    con.close()
+    return tasks
 
 
 @app.route('/', methods =['GET', 'POST'])
 def index():
 
     if request.method == 'GET':
-        # creates a connection to the database
-        con = sqlite3.connect('todosite.db')
-        
-        # returns the data in the form of dicts so column names can be accessed
-        # (otherwise it comes as a tuple that can't be accessed with column names)
-        con.row_factory = sqlite3.Row
-        
-        # Creates a cursor to manage the connections to the database
-        cur = con.cursor()
-
-        res = cur.execute(
-            'SELECT * FROM tasks ORDER BY deadline;'
-        ).fetchall()
-
-        tasks = []
-        for row in res:
-            tasks.append({
-                'id': row['task_id'],
-                'description': row['description'],
-                'subject': row['subject'],
-                'deadline': row['deadline']
-            })
-
-        result = cur.execute(
-            "SELECT subject_name FROM subjects;"
-        ).fetchall()
-        subjects = []
-        for row in result:
-            subjects.append({
-                'subject': row['subject_name']
-            })
+        tasks = getAllTasks()
+        subjects = getSubjectNames()
 
         return render_template('index.html', tasks=tasks, subjects=subjects)
     
@@ -170,7 +177,7 @@ def deleteSubject():
 
             if  not subject:
                 con.close()
-                return render_template('apology.html', message='Please choose a subject to delete.')
+                return apology('Please choose a subject to delete.')
 
             try:
                 cur.execute(
@@ -204,57 +211,35 @@ def deleteTask(id):
 
 @app.route('/updateTask/<int:id>', methods =['GET', 'POST'])
 def updateTask(id):
-    con = sqlite3.connect('todosite.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    # get the info from the database about the specific task.
-    result = cur.execute(
-        'SELECT * FROM tasks WHERE task_id = ?', (id,)
-    ).fetchone()
-
-    # then we get all info about the task in a getttable manner
-    task = cur.execute(
-        'SELECT * FROM tasks WHERE task_id = ?;',
-        (id,)
-    ).fetchone()
+    if request.method == "GET":
+            con = sqlite3.connect('todosite.db')
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
 
 
-    result = cur.execute(
-        'SELECT subject_name FROM subjects;'
-    ).fetchall()
-    subjects = []
-    for row in result:
-        subjects.append({
-            'subject': row['subject_name']
-        })
-
-    if request.method == 'GET':
-        con.close()
-        return render_template('update.html', task=task, subject=subjects)
-
-    if request.method == 'POST':
-        description = request.form.get('description')
-        deadline = request.form.get('deadline')
-        subject = request.form.get('subject')
-        task_id = id
-
-        res = cur.execute(
-            'SELECT subject_id FROM subjects WHERE subject_name = ?;', (subject,)
-        )
-        subject_id = []
-        for row in res:
-            subject_id.append({
-                'id': row['subject_id']
+            res = cur.execute(
+                'SELECT * FROM tasks WHERE task_id = ?', (id,)
+            ).fetchone()
+            task = {
+                'description': res['description'],
+                'deadline': res['deadline'],
+                'subject': res['subject']
+            }
+            result = cur.execute(
+                "SELECT subject_name FROM subjects;"
+            ).fetchall()
+            
+            subjects = []
+            
+            for row in result:
+             subjects.append({
+                'subject': row['subject_name']
             })
 
-        cur.execute(
-            "UPDATE tasks SET description = ?, deadline = ?, subject = ?, subject_id = ? WHERE task_id = ?",
-            (description, deadline, subject, subject_id['id'], id)
-        )
-        con.commit()
-        con.close()
-
             
+            con.close()
+            
+            return render_template('update.html', task=task, subjects=subjects)
 
 
 

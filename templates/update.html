@@ -63,7 +63,7 @@
         <br>
         <select id="subject" name="subject" required value="{{ task.subject }}">
             <option selected disabled>Choose Subject</option>
-            {% for subject in subject %}
+            {% for subject in subjects %}
             <option name="{{ subject.subject }}">{{ subject.subject }}</option>
             {% endfor %}
         </select>
