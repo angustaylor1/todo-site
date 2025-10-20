@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect
+from flask import Flask, render_template, session, request, redirect # type: ignore
 import sqlite3
 
 
@@ -69,11 +69,18 @@ def index():
             return'<h1>Please enter a deadline</h1>'
         elif not subject:
             return'<h1>Please choose a subject</h1>'
-        
+        res = cur.execute(
+            'SELECT subject_id FROM subjects WHERE subject_name = ?;', (subject,)
+        )
+        subject_id = []
+        for row in res:
+            subject_id.append({
+                'id': row['subject_id']
+            })
         
         cur.execute(
-            'INSERT INTO tasks (description, subject, deadline) VALUES (?, ?, ?);',
-            (description, subject, deadline)
+            'INSERT INTO tasks (description, subject, deadline, subject_id) VALUES (?, ?, ?, ?);',
+            (description, subject, deadline, subject_id[0]['id'])
             )
         con.commit()
         con.close()
@@ -181,7 +188,7 @@ def deleteSubject():
                 con.close()
                 return redirect('/deleteSubject')
 
-@app.route('/deleteTask/<int:id>')
+@app.route('/completeTask/<int:id>')
 def deleteTask(id):
         con = sqlite3.connect('todosite.db')
         cur = con.cursor()
@@ -197,7 +204,55 @@ def deleteTask(id):
 
 @app.route('/updateTask/<int:id>', methods =['GET', 'POST'])
 def updateTask(id):
-    return render_template('update.html')
+    con = sqlite3.connect('todosite.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    # get the info from the database about the specific task.
+    result = cur.execute(
+        'SELECT * FROM tasks WHERE task_id = ?', (id,)
+    ).fetchone()
+
+    # then we get all info about the task in a getttable manner
+    task = cur.execute(
+        'SELECT * FROM tasks WHERE task_id = ?;',
+        (id,)
+    ).fetchone()
+
+
+    result = cur.execute(
+        'SELECT subject_name FROM subjects;'
+    ).fetchall()
+    subjects = []
+    for row in result:
+        subjects.append({
+            'subject': row['subject_name']
+        })
+
+    if request.method == 'GET':
+        con.close()
+        return render_template('update.html', task=task, subject=subjects)
+
+    if request.method == 'POST':
+        description = request.form.get('description')
+        deadline = request.form.get('deadline')
+        subject = request.form.get('subject')
+        task_id = id
+
+        res = cur.execute(
+            'SELECT subject_id FROM subjects WHERE subject_name = ?;', (subject,)
+        )
+        subject_id = []
+        for row in res:
+            subject_id.append({
+                'id': row['subject_id']
+            })
+
+        cur.execute(
+            "UPDATE tasks SET description = ?, deadline = ?, subject = ?, subject_id = ? WHERE task_id = ?",
+            (description, deadline, subject, subject_id['id'], id)
+        )
+        con.commit()
+        con.close()
 
             
 

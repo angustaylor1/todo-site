@@ -22,13 +22,17 @@
         margin-left:auto;
         margin-right: auto;
         flex-wrap: wrap;
-        width: 200px;
+        width: 1000px;
         border: 2px black solid;
         padding: 5px;
+        border-radius: 5px;
+        box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 20%)
     }
 
     label, input, select {
-        margin-top: 10px;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
     }
     .select-container {
         display: flex;
@@ -36,6 +40,9 @@
     }
     .table-container {
         margin-top: 40px;
+    }
+    #description {
+        width: 500px;
     }
     
 </style>
@@ -46,15 +53,22 @@
 {% block body %} 
 <h1 class="top-header">Update Task</h1>
 
-<div class="select-container">
-    <select>
-        <option selected>Choose Subject</option>
-        {% for subject in subjects %}
-        <option name="{{ subject.subject }}">{{ subject.subject }}</option>
-        {% endfor %}
-    </select>
-    <select>
-        <option></option>
-    </select>
+<div class="form-container">
+    <form action="/", method="POST">
+        <label for="description">Task:</label>
+        <input type="text" id="description" placeholder="Description" name="description" required value="{{ task.description }}">
+        <br>
+        <label for="deadline">Deadline for task:</label>
+        <input type="date" id="deadline" name="deadline" required value="{{ task.deadline }}">
+        <br>
+        <select id="subject" name="subject" required value="{{ task.subject }}">
+            <option selected disabled>Choose Subject</option>
+            {% for subject in subject %}
+            <option name="{{ subject.subject }}">{{ subject.subject }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Update Task">
+    </form>
 </div>
 {% endblock %}
