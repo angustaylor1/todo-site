@@ -1,6 +1,6 @@
 from flask import Flask, render_template, session, request, redirect # type: ignore
 import sqlite3
-from info import getAllTasks, getSubjectNames, apology
+from info import getAllTasks, getSubjectNames, apology, getSubjectID
 
 
 
@@ -134,11 +134,16 @@ def deleteSubject():
             # check if the chosen subject exists
             # if it does we carry on, if it doesn't
             # we send an error.
+            found = False
             for elem in subjects:
                 if elem['subject'] == subject:
+                    found = True
                     break
-                else:
-                    return apology('That subject doesn\'t exist so can\'t be deleted')
+
+            if not found:
+                con.close()
+                return apology('That subject doesn\'t exist so can\'t be deleted')
+
             
             # we have confirmed the subject exists, so we can delete it and its tasks
             try:
@@ -161,7 +166,7 @@ def deleteSubject():
                 return '<h1>Could not delete that subject</h1>'
 
 @app.route('/completeTask/<int:id>')
-def deleteTask(id):
+def completeTask(id):
         con = sqlite3.connect('todosite.db')
         cur = con.cursor()
 
@@ -186,13 +191,11 @@ def updateTask(id):
                 'SELECT * FROM tasks WHERE task_id = ?', (id,)
             ).fetchone()
             task = {
+                'id': res['task_id'],
                 'description': res['description'],
                 'deadline': res['deadline'],
                 'subject': res['subject']
             }
-            result = cur.execute(
-                "SELECT subject_name FROM subjects;"
-            ).fetchall()
             
             subjects = getSubjectNames()
 
@@ -201,6 +204,46 @@ def updateTask(id):
             return render_template('update.html', task=task, subjects=subjects)
     
     if request.method == 'POST':
+
+        # get the form input info.
+        description = request.form.get('description')
+        deadline = request.form.get('deadline')
+        subject = request.form.get('subject')
+
+        # check the info is sound
+        if not description:
+            return '<h1>Please enter a description</h1>'
+        elif not deadline:
+            return'<h1>Please enter a deadline</h1>'
+        elif not subject:
+            return'<h1>Please choose a subject</h1>'
+
+        # collect the subject ID
+        subject_id = getSubjectID(subject)
+
+        # ensure the subject exists
+        if not subject_id:
+            return apology('That Subject does not exist')
+
+        # connect to db
+        con = sqlite3.connect('todosite.db')
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+
+        # try to update the database, if it doesnt wrok throw an error.
+        try:
+            cur.execute(
+                'UPDATE tasks SET description = ?, subject = ?, deadline = ?, subject_id = ? WHERE task_id = ?',
+                (description, subject, deadline, subject_id, id,)
+            )
+            # VERY IMPORTANT COMMIT THE CHANGES SO THEY ACTUALLY HAPPEN
+            con.commit()
+            con.close()
+        except:
+            con.close()
+            return '<h1> Sorry brother couldnt update that for you.</h1>'
+
+        # return redirect to index and the table should be altered.
         return redirect('/')
 
 

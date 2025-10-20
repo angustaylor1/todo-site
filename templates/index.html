@@ -53,9 +53,6 @@
         <option name="{{ subject.subject }}">{{ subject.subject }}</option>
         {% endfor %}
     </select>
-    <select>
-        <option></option>
-    </select>
 </div>
 
 <div class="form-container">
@@ -93,7 +90,7 @@
         <td>{{ task.subject }}</td>
         <td>
             <a href="/updateTask/{{ task.id }}">Update</a>
-            <a href="/deleteTask/{{ task.id }}">Complete</a>
+            <a href="/completeTask/{{ task.id }}">Complete</a>
         </td>
         </tr>
         {% endfor %}

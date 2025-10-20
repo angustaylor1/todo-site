@@ -54,7 +54,7 @@
 <h1 class="top-header">Update Task</h1>
 
 <div class="form-container">
-    <form action="/", method="POST">
+    <form action="/updateTask/{{ task.id }}", method="POST">
         <label for="description">Task:</label>
         <input type="text" id="description" placeholder="Description" name="description" required value="{{ task.description }}">
         <br>

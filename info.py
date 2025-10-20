@@ -51,3 +51,20 @@ def getAllTasks():
 
     con.close()
     return tasks
+
+
+def getSubjectID(subject):
+    con = sqlite3.connect('todosite.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+
+    res = cur.execute(
+        'SELECT subject_id FROM subjects WHERE subject_name = ?', (subject,)
+    ).fetchone()
+    
+    con.close()
+    
+    if res:
+        return res['subject_id']
+    else:
+        return None
