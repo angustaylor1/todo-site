@@ -70,3 +70,27 @@ def getSubjectID(subject):
         return res['subject_id']
     else:
         return None
+    
+
+def getAllSubjectInfo():
+    # connects to database and creates a cursor
+    con = sqlite3.connect('todosite.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+
+    # retrieves the data from the db
+    result = cur.execute(
+        "SELECT subject_name, subject_color FROM subjects;"
+        ).fetchall()
+    
+    # populates subjects with a list of dicts of all the subject names
+    subjects = []
+    for row in result:
+        subjects.append({
+        'subject': row['subject_name'],
+        'color': row['subject_color']
+        })
+        # closes connection
+    con.close()
+
+    return subjects

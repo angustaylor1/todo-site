@@ -1,6 +1,6 @@
 from flask import Flask, render_template, session, request, redirect # type: ignore
 import sqlite3
-from info import getAllTasks, getSubjectNames, apology, getSubjectID
+from info import getAllTasks, getSubjectNames, apology, getSubjectID, getAllSubjectInfo
 
 
 
@@ -13,7 +13,7 @@ def index():
 
     if request.method == 'GET':
         tasks = getAllTasks()
-        subjects = getSubjectNames()
+        subjects = getAllSubjectInfo()
 
         return render_template('index.html', tasks=tasks, subjects=subjects)
     

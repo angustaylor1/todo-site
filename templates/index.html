@@ -48,10 +48,10 @@
 <h1 class="top-header">To Do</h1>
 
 <div class="select-container">
-    <select>
-        <option selected>Choose Subject</option>
+    <select class="subject-selector" id="subject-dropdown">
+        <option selected>All</option>
         {% for subject in subjects %}
-        <option name="{{ subject.subject }}">{{ subject.subject }}</option>
+        <option name="{{ subject.subject }}" value="{{ subject.subject }}">{{ subject.subject }}</option>
         {% endfor %}
     </select>
 </div>

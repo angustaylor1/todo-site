@@ -9,7 +9,7 @@ Stuff to do:
 add an edit subject function
 add the colors to the tasks
 add the functionality that allows you to see only the tasks from a specific subject.
-Add functionality that is the task is overdue it goes red!!!! it can always be edited for a later date. 
+Add functionality that is the task is overdue it goes red!!!! it can always be edited for a later date.
 
 
 
