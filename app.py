@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect # type: ignore
+from flask import Flask, render_template, session, request, redirect, jsonify # type: ignore
 import sqlite3
 from info import getAllTasks, getSubjectNames, apology, getSubjectID, getAllSubjectInfo
 
@@ -14,6 +14,7 @@ def index():
     if request.method == 'GET':
         tasks = getAllTasks()
         subjects = getAllSubjectInfo()
+        
 
         return render_template('index.html', tasks=tasks, subjects=subjects)
     
@@ -63,14 +64,15 @@ def addSubject():
         cur = con.cursor()
 
         res = cur.execute(
-            'SELECT subject_name FROM subjects;'
+            'SELECT subject_name, subject_color FROM subjects;'
         ).fetchall()
         con.close()
         subjects = []
 
         for row in res:
             subjects.append({
-                'subject': row['subject_name']
+                'subject': row['subject_name'],
+                'subject': row['subject_color']
             })
             
         return render_template('addSubject.html', subjects=subjects)
@@ -78,7 +80,7 @@ def addSubject():
     if request.method == 'POST':
 
         newSubjectName = request.form.get('subject_name')
-        subjectColor = request.form.get('color')
+        subjectColor = request.form.get('subject_color')
 
         if not newSubjectName:
             return '<h1>Make sure the subject has a name'

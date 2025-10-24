@@ -22,7 +22,7 @@
         margin-left:auto;
         margin-right: auto;
         flex-wrap: wrap;
-        width: 200px;
+        width: 500px;
         border: 2px black solid;
         padding: 5px;
         border-radius: 5px;
@@ -38,7 +38,6 @@
     .table-container {
         margin-top: 40px;
     }
-    
 </style>
 
 {% endblock%}
@@ -49,7 +48,7 @@
 
 <div class="select-container">
     <select class="subject-selector" id="subject-dropdown">
-        <option selected>All</option>
+        <option value="all" id="all" selected>All</option>
         {% for subject in subjects %}
         <option name="{{ subject.subject }}" value="{{ subject.subject }}">{{ subject.subject }}</option>
         {% endfor %}
@@ -59,15 +58,20 @@
 <div class="form-container">
     <form action="/", method="POST">
         <label for="description">Describe your task:</label>
+        <br>
         <input type="text" id="description" placeholder="Description" name="description" required>
+        <br>
         <label for="deadline">Deadline for task:</label>
+        <br>
         <input type="date" id="deadline" name="deadline" required>
+        <br>
         <select id="subject" name="subject" required>
             <option selected disabled>Choose Subject</option>
             {% for subject in subjects %}
             <option name="{{ subject.subject }}">{{ subject.subject }}</option>
             {% endfor %}
         </select>
+        <br>
         <input type="submit" value="Add Task">
     </form>
 </div>
@@ -82,20 +86,96 @@
         <th scope="col">Edit</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="t-body">
         {% for task in tasks %}
-        <tr>
-        <th scope="row">{{ task.id }}</th>
-        <td class="description">{{ task.description }}</td>
-        <td class="deadline">{{ task.deadline }}</td>
-        <td class="subject">{{ task.subject }}</td>
-        <td>
-            <a href="/updateTask/{{ task.id }}">Update</a>
-            <a href="/completeTask/{{ task.id }}">Complete</a>
-        </td>
+        <tr style="background-color: {{ task.color }};">
+            <th scope="row" style="background-color: {{ task.color }};">{{ task.id }}</th>
+            <td class="description" style="background-color: {{ task.color }};">{{ task.description }}</td>
+            <td class="deadline" style="background-color: {{ task.color }};">{{ task.deadline }}</td>
+            <td class="subject" style="background-color: {{ task.color }};">{{ task.subject }}</td>
+            <td style="background-color: {{ task.color }};">
+                <a href="/updateTask/{{ task.id }}">Update</a>
+                <a href="/completeTask/{{ task.id }}">Complete</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
     </table>
 </div>
+<script>
+
+    function updateTableBody(taskList) {
+        let new_body = document.createElement('tbody');
+        for (i = 0; i < taskList.length; i++) {
+            let row = document.createElement('tr');
+            let cell = document.createElement('th');
+            cell.setAttribute('style', `background-color: ${taskList[i]['color']}`);
+            cell.setAttribute('scope', 'row');
+            cell.innerHTML = taskList[i]['id'];
+            
+            let cell2 = document.createElement('td');
+            cell2.setAttribute('style', `background-color: ${taskList[i]['color']}`);
+            cell2.setAttribute('class', 'description');
+            cell2.innerHTML = taskList[i]['description'];
+
+            let cell3 = document.createElement('td');
+            cell3.setAttribute('style', `background-color: ${taskList[i]['color']}`);
+            cell3.setAttribute('class', 'deadline');
+            cell3.innerHTML = taskList[i]['deadline'];
+
+            let cell4 = document.createElement('td');
+            cell4.setAttribute('style', `background-color: ${taskList[i]['color']}`);
+            cell4.setAttribute('class', 'subject');
+            cell4.innerHTML = taskList[i]['subject'];
+
+            let cell5 = document.createElement('td');
+            cell5.setAttribute('style', `background-color: ${taskList[i]['color']}`);
+            cell5.setAttribute('class', 'edit');
+            
+            let update = document.createElement('a');
+            update.setAttribute('href', `/updateTask/${taskList[i]['id']}`);
+            update.textContent = 'Update'
+
+            let complete = document.createElement('a')
+            complete.setAttribute('href', `/complete/${taskList[i]['id']}`);
+            complete.textContent = 'Complete'
+
+            cell5.append(update, complete)
+                    
+            row.append(cell, cell2, cell3, cell4, cell5);
+            new_body.appendChild(row);
+            }
+            return new_body;
+
+    }
+    
+    // get references to the subject chosen
+    let selectedSubject = document.querySelector('#subject-dropdown');
+
+    // getting a js friendly list of all tasks
+    let taskList = {{ tasks | tojson | safe }};
+
+    // Selecting the body of the table.
+    let table_body = document.getElementById('t-body');
+
+    selectedSubject.addEventListener('change', () => {
+        value = selectedSubject.value;
+        // if the all choice has been reselected load all tasks
+        if (value == 'all') {
+            let updated_body = updateTableBody(taskList);
+            while (table_body.firstChild) {
+            table_body.firstChild.remove();
+            }
+            table_body.replaceWith(updated_body)
+        } else {
+            let filtered = taskList.filter((task) => task['subject'] == value)
+
+            // create a new body of the table with the right tasks
+            let updated_body = updateTableBody(filtered)
+            table_body.replaceWith(updated_body)
+            table_body = updated_body;
+
+        }
+    })
+</script>
 {% endblock %}

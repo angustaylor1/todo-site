@@ -55,22 +55,6 @@ def getAllTasks():
     return tasks
 
 
-def getSubjectID(subject):
-    con = sqlite3.connect('todosite.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-
-    res = cur.execute(
-        'SELECT subject_id FROM subjects WHERE subject_name = ?', (subject,)
-    ).fetchone()
-    
-    con.close()
-    
-    if res:
-        return res['subject_id']
-    else:
-        return None
-    
 
 def getAllSubjectInfo():
     # connects to database and creates a cursor
@@ -94,3 +78,20 @@ def getAllSubjectInfo():
     con.close()
 
     return subjects
+
+
+def getSubjectID(subject):
+    con = sqlite3.connect('todosite.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+
+    res = cur.execute(
+        'SELECT subject_id FROM subjects WHERE subject_name = ?', (subject,)
+    ).fetchone()
+    
+    con.close()
+    
+    if res:
+        return res['subject_id']
+    else:
+        return None
