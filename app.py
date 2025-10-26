@@ -14,6 +14,12 @@ def index():
     if request.method == 'GET':
         tasks = getAllTasks()
         subjects = getAllSubjectInfo()
+        subject_colors = {}
+        for subject in subjects:
+            subject_colors[subject['subject']] = subject['color'] 
+
+        for task in tasks:
+            task['color'] = subject_colors[task['subject']]
         
 
         return render_template('index.html', tasks=tasks, subjects=subjects)
@@ -63,24 +69,13 @@ def addSubject():
         con.row_factory = sqlite3.Row
         cur = con.cursor()
 
-        res = cur.execute(
-            'SELECT subject_name, subject_color FROM subjects;'
-        ).fetchall()
-        con.close()
-        subjects = []
 
-        for row in res:
-            subjects.append({
-                'subject': row['subject_name'],
-                'subject': row['subject_color']
-            })
-            
-        return render_template('addSubject.html', subjects=subjects)
+        return render_template('addSubject.html')
     
     if request.method == 'POST':
 
         newSubjectName = request.form.get('subject_name')
-        subjectColor = request.form.get('subject_color')
+        subjectColor = request.form.get('color_selector')
 
         if not newSubjectName:
             return '<h1>Make sure the subject has a name'
@@ -91,25 +86,32 @@ def addSubject():
         con.row_factory = sqlite3.Row
         cur = con.cursor()
 
-        subject_names = cur.execute(
-            'SELECT subject_name FROM subjects'
-        ).fetchall()
+        existing = cur.execute(
+            'SELECT 1 FROM subjects WHERE subject_name = ?;',
+            (newSubjectName,)
+        ).fetchone()
 
-        for row in subject_names:
-            if row['subject_name'] == newSubjectName:
-                return 'That subject name is already created. Try another one.'
+        if existing:
+            return 'That subject name is already created. Try another one.'
 
-        try:
-            res = cur.execute(
-                'INSERT INTO subjects (subject_name, subject_color) VALUES (?, ?);',
-                (newSubjectName, subjectColor)
-            )
-            con.commit()
-            con.close()
-            return render_template('addSubject.html', message='Succesfully created new Subject!')
-        except:
-            con.close()
-            return '<h1> We couldn\'t create that subject</h1>'
+            
+        res = cur.execute(
+            'SELECT color_id FROM colors WHERE hex_color = ?;', (subjectColor,)
+        ).fetchone()
+
+        if res is None:
+            return '<h1> That color was not found</h1>'
+
+        color_id = res['color_id']
+
+
+        cur.execute(
+            'INSERT INTO subjects (subject_name, color_id) VALUES (?, ?);',
+            (newSubjectName, color_id,)
+        )
+        con.commit()
+        con.close()
+        return render_template('addSubject.html', message='Succesfully created new Subject!')
 
 
 @app.route('/deleteSubject', methods=['GET', 'POST'])

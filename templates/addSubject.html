@@ -42,8 +42,18 @@
 <div class="form-container">
     <form action="/addSubject" method="POST">
         <input type="text" placeholder="Subject Name" name="subject_name" class="form-item" required>
-        <label for="subject_color">Choose a color:</label>
-        <input type="color" class="form-item" name="subject_color">
+        <label for="color_selector">Choose a colour:</label>
+        <select name="color_selector" id="color_selector">
+            <option selected disabled>Choose</option>
+            <option value="#fa534d">Red</option>
+            <option value="#e3b5b5">Pink</option>
+            <option value="#f5d16e">Yellow</option>
+            <option value="#770af2">Blue</option>
+            <option value="#c0f59f">Green</option>
+            <option value="#c883f2">Purple</option>
+            <option value="#af6f5f3">Light Blue</option>
+        </select>
+        <br>
         <input type="submit" value="Create Subject" name="add">
     </form>
     <div class="result">

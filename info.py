@@ -64,7 +64,7 @@ def getAllSubjectInfo():
 
     # retrieves the data from the db
     result = cur.execute(
-        "SELECT subject_name, subject_color FROM subjects;"
+        "SELECT subjects.subject_name, colors.hex_color FROM subjects JOIN colors ON subjects.color_id = colors.color_id;"
         ).fetchall()
     
     # populates subjects with a list of dicts of all the subject names
@@ -72,7 +72,7 @@ def getAllSubjectInfo():
     for row in result:
         subjects.append({
         'subject': row['subject_name'],
-        'color': row['subject_color']
+        'color': row['hex_color']
         })
         # closes connection
     con.close()
@@ -95,3 +95,4 @@ def getSubjectID(subject):
         return res['subject_id']
     else:
         return None
+    

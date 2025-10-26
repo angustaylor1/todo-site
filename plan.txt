@@ -39,3 +39,13 @@ the actual to do list:
         And give the option to look at all tasks that you need, with dates and how many days left to complete.
         if it a weekly thing have it repeat, but have the most current one come up, not have an endless list of them
 
+
+
+Colors:
+green
+pink
+yellow
+blue
+red
+purple
+brown

@@ -9,6 +9,10 @@
         flex-direction: column;
         justify-content: space-between;
     }
+
+    td, th {
+        text-align: center;
+    }
     .top-header {
         text-align: center;
     }
@@ -26,6 +30,14 @@
         border: 2px black solid;
         padding: 5px;
         border-radius: 5px;
+    }
+
+    a {
+        color: black;
+        text-decoration: underline;
+    }
+    a:hover {
+        background-color: white;
     }
 
     label, input, select {
@@ -137,10 +149,11 @@
             update.textContent = 'Update'
 
             let complete = document.createElement('a')
-            complete.setAttribute('href', `/complete/${taskList[i]['id']}`);
+            complete.setAttribute('href', `/completeTask/${taskList[i]['id']}`);
             complete.textContent = 'Complete'
 
-            cell5.append(update, complete)
+
+            cell5.append(update, document.createElement('br'), complete)
                     
             row.append(cell, cell2, cell3, cell4, cell5);
             new_body.appendChild(row);
@@ -167,6 +180,7 @@
             table_body.firstChild.remove();
             }
             table_body.replaceWith(updated_body)
+            table_body = updated_body;
         } else {
             let filtered = taskList.filter((task) => task['subject'] == value)
 
