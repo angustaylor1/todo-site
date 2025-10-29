@@ -100,14 +100,14 @@
     </thead>
     <tbody id="t-body">
         {% for task in tasks %}
-        <tr style="background-color: {{ task.color }};">
-            <th scope="row" style="background-color: {{ task.color }};">{{ task.id }}</th>
-            <td class="description" style="background-color: {{ task.color }};">{{ task.description }}</td>
-            <td class="deadline" style="background-color: {{ task.color }};">{{ task.deadline }}</td>
-            <td class="subject" style="background-color: {{ task.color }};">{{ task.subject }}</td>
-            <td style="background-color: {{ task.color }};">
-                <a href="/updateTask/{{ task.id }}">Update</a>
-                <a href="/completeTask/{{ task.id }}">Complete</a>
+        <tr style="background-color: {{ task.color }}; color: white;">
+            <th scope="row" style="background-color: {{ task.color }}; color: white;">{{ task.id }}</th>
+            <td class="description" style="background-color: {{ task.color }}; color: white;">{{ task.description }}</td>
+            <td class="deadline" style="background-color: {{ task.color }}; color: white;">{{ task.deadline }}</td>
+            <td class="subject" style="background-color: {{ task.color }}; color: white;">{{ task.subject }}</td>
+            <td style="background-color: {{ task.color }}; color: white;">
+                <a href="/updateTask/{{ task.id }}" style="color: white;">Update</a>
+                <a href="/completeTask/{{ task.id }}" style="color: white;">Complete</a>
             </td>
         </tr>
         {% endfor %}
@@ -121,7 +121,7 @@
         for (i = 0; i < taskList.length; i++) {
             let row = document.createElement('tr');
             let cell = document.createElement('th');
-            cell.setAttribute('style', `background-color: ${taskList[i]['color']}`);
+            cell.setAttribute('style', `background-color: ${taskList[i]['color']}; color: white;`);
             cell.setAttribute('scope', 'row');
             cell.innerHTML = taskList[i]['id'];
             
